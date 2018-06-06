@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/bin/bash
 printf "\nRe-initializing ProfitTrailer Services...\n\n"
 /etc/init.d/pt restart
@@ -13,3 +14,20 @@ printf "\nDone.\n\n"
 
 
 
+=======
+#!/bin/bash
+printf "\nRe-initializing ProfitTrailer Services...\n\n"
+/etc/init.d/pt restart
+/etc/init.d/ptf restart
+/etc/init.d/ptt restart
+printf "\nProfitTrailer Log...\n\n"
+(tail -n $(tput lines) -f "/var/log/pt.log" & P=$!; sleep 10; kill -9 $P)
+printf "\nPT-Feeder Log...\n\n"
+(tail -n $(tput lines) -f "/var/log/ptf.log" & P=$!; sleep 10; kill -9 $P)
+printf "\nPT-Tracker Log...\n\n"
+(tail -n $(tput lines) -f "/var/log/ptt.log" & P=$!; sleep 10; kill -9 $P)
+printf "\nDone.\n\n"
+
+
+
+>>>>>>> 93592abd2ee6d8c0fbacf99ab7056dfd30bd1e8f
