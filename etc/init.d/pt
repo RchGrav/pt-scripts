@@ -1,0 +1,149 @@
+#!/bin/sh
+# /etc/init.d/pt
+### BEGIN INIT INFO
+# Provides:          profittrailer
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start profittrailer at boot time
+# Description:       Profit Trailer {start|stop|status|restart} init.d script.
+### END INIT INFO
+
+#set -x
+
+if [ $(id -u) != 0 ]; then
+   sudo "$0" "$@"
+   exit
+fi
+
+_ME=$(basename "${0}")
+DIR=$(cd "$(dirname "$0")"; pwd)
+
+
+# EDIT THESE VARIABLES IF NEEDED
+PTRAIL_PATH=/home/pt/ProfitTrailer
+PTRAIL_JAR=ProfitTrailer.jar
+
+# If you would like the ProfitTrailer to start and stop automatically when rebooting
+# place this file in the '/etc/init.d' folder and execute the command
+# update-rc.d pt defaults
+
+SERVICE_NAME=ProfitTrailer
+PID_PATH_NAME="/tmp/$_ME-pid"
+
+get_pid() {
+    cat "$PID_PATH_NAME"
+}
+
+is_running() {
+    [ -f "$PID_PATH_NAME" ] && ps -p `get_pid` > /dev/null 2>&1
+}
+
+status() {
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            printf $SERVICE_NAME" PID:"$PID
+        else
+            printf $SERVICE_NAME
+        fi
+        if ps ax | grep -v grep | grep $PTRAIL_JAR > /dev/null; then
+            printf " (Active)\n"
+        else
+            printf " (Inactive)\n"
+            [ -f $PID_PATH_NAME ] && {
+                printf "\n"
+                tail /var/log/$_ME.err | grep INFO:
+                printf "Problem Detected:\n"
+                printf $SERVICE_NAME" started but did not remain active.\n"
+                printf "\n"
+            }
+        fi
+}
+
+start() {
+        if  ! ps ax | grep -v grep | grep $PTRAIL_JAR > /dev/null ; then
+            [ -f $PID_PATH_NAME ] && rm -f $PID_PATH_NAME
+            [ -f /var/log/$_ME.log ] && rm /var/log/$_ME.log
+            [ -f /var/log/$_ME.err ] && rm /var/log/$_ME.err
+            printf "Starting "$SERVICE_NAME".\n"
+            cd $PTRAIL_PATH
+            nohup java -jar $PTRAIL_JAR -XX:+UseConcMarkSweepGC -Xmx256m -Xms256m /tmp 2>> /var/log/$_ME.err >> /var/log/$_ME.log &
+            printf "$!\n" > $PID_PATH_NAME
+            (tail -n $(tput lines) -f /var/log/$_ME.log | grep "INFO" & P=$!; sleep 15; kill -9 $P)
+        else
+            status
+        fi
+}
+
+log() {
+  if [ -f /var/log/$_ME.log ]; then
+            tail -n $(tput lines) /var/log/$_ME.log; printf "\n"
+		else
+            printf "Unable to locate logs.\n"
+        fi
+}
+
+console() {
+  if [ -f /var/log/$_ME.log ]; then
+            tail -f /var/log/$_ME.log
+        else
+            printf "Unable to locate logs.\n"
+        fi
+}
+
+stop() {
+  if is_running; then
+        printf "Stopping $SERVICE_NAME.."
+        kill `get_pid`
+        for i in 1 2 3 4 5 6 7 8 9 10
+        # for i in `seq 10`
+        do
+            if ! is_running; then
+                break
+            fi
+            printf "."
+            sleep 1
+        done
+        printf "\n"
+
+        if is_running; then
+            printf "Not stopped; may still be shutting down or shutdown may have failed\n"
+            exit 1
+        else
+            printf "Stopped\n"
+            if [ -f "$pid_file" ]; then
+                rm "$pid_file"
+            fi
+        fi
+    else
+        printf $SERVICE_NAME" is not running.\n"
+    fi
+
+}
+
+case $1 in
+    start)
+        start
+    ;;
+    stop)
+        stop
+    ;;
+    status)
+        status
+    ;;
+    restart)
+        stop
+        start
+    ;;
+    console)
+        console
+    ;;
+    log)
+        log
+    ;;
+    *)
+        printf "Usage: "${_ME}" {start|stop|restart|status|console|log}\n"
+        exit 1
+    ;;
+esac
