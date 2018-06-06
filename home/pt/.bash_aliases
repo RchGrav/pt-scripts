@@ -21,10 +21,10 @@ alias ptncheck='gitcheck Roy4lz ptnotifications PT-Notification'
 alias pttcheck='gitcheck bTayFla PtTracker PT-Tracker'
 
 #Aliases for retrieving the archive for the most recent release.
-alias ptget='wget $(ptcheck | grep download)'
-alias ptfget='wget $(ptfcheck | grep download | grep -v raspberry-pi)'
-alias ptnget='wget $(ptncheck | grep download)'
-alias pttget='wget $(pttcheck | grep download | grep linux)'
+alias ptget='wget -q --show-progress $(ptcheck | grep download)'
+alias ptfget='wget -q --show-progress $(ptfcheck | grep download | grep -v raspberry-pi)'
+alias ptnget='wget -q --show-progress $(ptncheck | grep download)'
+alias pttget='wget -q --show-progress $(pttcheck | grep download | grep linux)'
 
 #Misc Aliases 
 alias pt='/etc/init.d/pt'
