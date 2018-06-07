@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #Install DotNet Ubuntu 18.04 LTS (Bionic)
+#ProfitTrailer VPS Enhancements: https://github.com/RchGrav/pt-scripts
 
 sudo apt-get install apt-transport-https -y
 
