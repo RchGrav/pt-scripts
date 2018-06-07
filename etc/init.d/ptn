@@ -10,7 +10,7 @@
 # Description:       Profit Trailer {start|stop|status|restart} init.d script.
 ### END INIT INFO
 
-#set -x
+#ProfitTrailer VPS Enhancements: https://github.com/RchGrav/pt-scripts
 
 if [ $(id -u) != 0 ]; then
    sudo "$0" "$@"
