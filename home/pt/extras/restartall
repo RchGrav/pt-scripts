@@ -1,4 +1,5 @@
 #!/bin/bash
+#ProfitTrailer VPS Enhancements: https://github.com/RchGrav/pt-scripts
 printf "\nRe-initializing ProfitTrailer Services...\n\n"
 /etc/init.d/pt restart
 /etc/init.d/ptf restart
