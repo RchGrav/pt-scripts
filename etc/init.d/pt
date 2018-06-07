@@ -112,8 +112,8 @@ stop() {
             exit 1
         else
             printf "Stopped\n"
-            if [ -f "$pid_file" ]; then
-                rm "$pid_file"
+            if [ -f "$PID_PATH_NAME" ]; then
+                rm "$PID_PATH_NAME"
             fi
         fi
     else
