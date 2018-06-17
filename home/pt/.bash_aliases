@@ -1,7 +1,8 @@
 #~/.BASH_ALIASES
-#ProfitTrailer VPS Enhancements: https://github.com/RchGrav/pt-scripts
 
-#Function to check github, requires $1=username, $2=repo, $3=title.
+# ProfitTrailer Scripts: https://github.com/RchGrav/pt-scripts #
+
+#### Function to check github, requires $1=username, $2=repo, $3=title. ####
 gitcheck() {
     gitapi="$(curl --silent "https://api.github.com/repos/$1/$2/releases/latest" | sed 's/%/%%/g')"
     latest="$(echo "$gitapi" | grep -Po '"published_at": "\K.*?(?=")')"
@@ -16,25 +17,30 @@ gitcheck() {
     printf "$3's latest release $release came out $when.\n$url\n"
 }
 
-#Aliases for checking github projects. 
+#### Aliases for checking github projects ####
 alias ptcheck='gitcheck taniman profit-trailer ProfitTrailer'
 alias ptfcheck='gitcheck mehtadone PTFeeder PT-Feeder'
 alias ptncheck='gitcheck Roy4lz ptnotifications PT-Notification'
 alias pttcheck='gitcheck bTayFla PtTracker PT-Tracker'
 
-#Aliases for retrieving the archive for the most recent release.
+#### Aliases for retrieving the archive for the most recent release ####
 alias ptget='wget -q --show-progress $(ptcheck | grep download)'
 alias ptfget='wget -q --show-progress $(ptfcheck | grep download | grep -v raspberry-pi)'
 alias ptnget='wget -q --show-progress $(ptncheck | grep download)'
 alias pttget='wget -q --show-progress $(pttcheck | grep download | grep linux)'
 
-#Misc Aliases 
+#### Aliases for controlling ProfitTrailer services ####
 alias pt='/etc/init.d/pt'
-alias ptt='/etc/init.d/ptt'
 alias ptf='/etc/init.d/ptf'
 alias ptn='/etc/init.d/ptn'
+alias ptt='/etc/init.d/ptt'
+
+#### Aliases for viewing logs ####
+alias logs='tail -f /var/log/pt.log /var/log/ptf.log /var/log/ptt.log /var/log/ptn.log'
 alias ptlog='tail -n $(tput lines) -f /var/log/pt.log'
-alias pttlog='tail -n $(tput lines) -f /var/log/ptt.log'
 alias ptflog='tail -n $(tput lines) -f /var/log/ptf.log'
 alias ptnlog='tail -n $(tput lines) -f /var/log/ptn.log'
+alias pttlog='tail -n $(tput lines) -f /var/log/ptt.log'
+
+#### Alias for editing PT-Feeder settings ####
 alias ptfedit='nano ~/pt-feeder/config/appsettings.json'
