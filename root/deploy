@@ -13,7 +13,7 @@ apt install oracle-java8-set-default -y
 sleep 5
 
 add-apt-repository ppa:certbot/certbot -y
-apt update -y && apt-get install letsencrypt -y
+apt update -y && apt install letsencrypt -y
 
 #
 #
