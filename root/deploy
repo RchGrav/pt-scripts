@@ -12,9 +12,8 @@ javac -version
 apt install oracle-java8-set-default -y
 sleep 5
 
-apt-get update
 add-apt-repository ppa:certbot/certbot -y
-apt-get update && apt-get install letsencrypt
+apt update -y && apt-get install letsencrypt -y
 
 #
 #
