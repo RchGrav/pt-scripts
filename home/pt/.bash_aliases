@@ -1,4 +1,4 @@
-#~/.BASH_ALIASES
+#~/.bash_aliases
 
 # ProfitTrailer Scripts: https://github.com/RchGrav/pt-scripts #
 
