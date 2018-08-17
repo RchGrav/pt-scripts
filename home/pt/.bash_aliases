@@ -1,3 +1,7 @@
+#~/.bash_aliases
+
+#ProfitTrailer Scripts: https://github.com/RchGrav/pt-scripts
+
 #Function to check github, gitcheck requires $1=username, $2=repo, $3=title.
 gitcheck() {
     gitapi="$(curl --silent "https://api.github.com/repos/$1/$2/releases/latest" | sed 's/%/%%/g')"
