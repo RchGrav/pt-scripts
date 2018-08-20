@@ -54,7 +54,7 @@ apt-get install nginx letsencrypt apache2-utils -y
 
 # pt account
 
-adduser --disabled-password --gecos "" pt
+adduser --gecos "" pt
 usermod -aG sudo pt
 chown -R pt:pt /home/pt/;
 echo %sudo ALL=NOPASSWD: /etc/init.d/pt, /etc/init.d/ptf, /etc/init.d/ptt, /etc/init.d/ptn > /etc/sudoers.d/profittrailer
