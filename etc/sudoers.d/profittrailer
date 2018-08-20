@@ -1,0 +1,4 @@
+%sudo ALL=NOPASSWD: /etc/init.d/pt
+%sudo ALL=NOPASSWD: /etc/init.d/ptf
+%sudo ALL=NOPASSWD: /etc/init.d/ptt
+%sudo ALL=NOPASSWD: /etc/init.d/ptn
