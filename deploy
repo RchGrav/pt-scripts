@@ -22,9 +22,9 @@ wget -q https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 
-apt update -y 
-apt-get install apt-transport-https
-apt-get install aspnetcore-runtime-2.1
+apt-get install apt-transport-https -y
+apt-get update -y 
+apt-get install aspnetcore-runtime-2.1 -y
 
 #Optional
 #echo "export DOTNET_CLI_TELEMETRY_OPTOUT" >> ~/.profile
