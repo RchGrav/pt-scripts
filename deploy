@@ -22,9 +22,9 @@ wget -q https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 
-sudo apt-get install apt-transport-https
-sudo apt-get update
-sudo apt-get install aspnetcore-runtime-2.1
+apt update -y 
+apt-get install apt-transport-https
+apt-get install aspnetcore-runtime-2.1
 
 #Optional
 #echo "export DOTNET_CLI_TELEMETRY_OPTOUT" >> ~/.profile
@@ -105,4 +105,3 @@ find . -type f -not -iwholename '*.git*' -name "/etc/bash.bashrc" -exec sed -i "
 
 service ssh restart
 login pt
-
