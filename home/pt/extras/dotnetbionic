@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
-#Install DotNet Ubuntu 18.04 LTS (Bionic)
+#Install DotNet 2.1 on Ubuntu 
 #ProfitTrailer VPS Enhancements: https://github.com/RchGrav/pt-scripts
 
-wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
+source /etc/os-release
+if [[ $ID != ubuntu ]]; then
+   echo "ERROR: This script is meant for an Ubuntu based host"
+   exit
+fi
+
+wget -q https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
 
