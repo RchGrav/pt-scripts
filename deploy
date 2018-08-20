@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+#Prepare Ubuntu Server
+#ProfitTrailer VPS Enhancements: https://github.com/RchGrav/pt-scripts
+
+if [ $(id -u) != 0 ]; then
+   sudo "$0" "$@"
+   exit
+fi
+
+_ME=$(basename "${0}")
+DIR=$(cd "$(dirname "$0")"; pwd)
+
+source /etc/os-release
+if [[ $ID != ubuntu ]]; then
+   echo "FATAL ERROR: This deploy script is only tested on Ubuntu based hosts."
+   exit
+fi
+
+# aspnetcore
+
+wget -q https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+
+sudo apt-get install apt-transport-https
+sudo apt-get update
+sudo apt-get install aspnetcore-runtime-2.1
+
+#Optional
+#echo "export DOTNET_CLI_TELEMETRY_OPTOUT" >> ~/.profile
+
+# java
+
+apt-get install libssl-dev -y 
+apt-get install make -y
+apt-get install build-essential -y
+apt-get install software-properties-common -y 
+apt-get install rsync -y
+add-apt-repository ppa:webupd8team/java -y
+apt update -y 
+apt install oracle-java8-installer -y
+javac -version
+apt install oracle-java8-set-default -y
+
+echo "JAVA_HOME=/usr/lib/jvm/java-8-oracle/jre/bin/java" >> /etc/environment
+sleep 5
+
+# certbot
+
+apt-get install software-properties-common -y
+add-apt-repository ppa:certbot/certbot -y
+apt update -y 
+apt-get install nginx letsencrypt apache2-utils -y
+
+# pt account
+
+adduser --disabled-password --gecos "" pt
+usermod -aG sudo pt
+chown -R pt:pt /home/pt/;
+echo %sudo ALL=NOPASSWD: /etc/init.d/pt, /etc/init.d/ptf, /etc/init.d/ptt, /etc/init.d/ptn > /etc/sudoers.d/profittrailer
+chmod 0440 /etc/sudoers.d/profittrailer
+sleep 5 
+cd 
+
+# swap for vps
+
+fallocate -l 3G /swapfile;
+ls -lh /swapfile;
+chmod 600 /swapfile;
+ls -lh /swapfile;
+mkswap /swapfile;
+swapon /swapfile;
+swapon --show;
+free -h;
+swapon --show;
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab;
+sleep 5
+
+# secure shared memory
+
+echo "tmpfs     /dev/shm     tmpfs     defaults,noexec,nosuid,size=8g      0     0" | sudo tee -a /etc/fstab;
+mount -o remount /dev/shm
+
+# bash completion
+
+one="# enable bash completion in interactive shells
+#if ! shopt -oq posix; then
+#  if [ -f /usr/share/bash-completion/bash_completion ]; then
+#    . /usr/share/bash-completion/bash_completion
+#  elif [ -f /etc/bash_completion ]; then
+#    . /etc/bash_completion
+#  fi
+#fi"
+two="enable bash completion in interactive shells
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi"
+find . -type f -not -iwholename '*.git*' -name "/etc/bash.bashrc" -exec sed -i "s#$one#$two#g" {} \;
+
+# login as pt account for testing
+
+service ssh restart
+login pt
+
